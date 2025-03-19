@@ -1,7 +1,7 @@
 import { defineConfig } from 'cypress';
 import viteConfig from './vite.config';
 
-export default defineCongig({
+export default defineConfig({
 	component: {
 		port: 5173,
 		devServer: {

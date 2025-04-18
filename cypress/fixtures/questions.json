@@ -19,47 +19,5 @@
                 "isCorrect": false
             }
         ]
-    },
-    {
-        "question": "What year is it?",
-        "answers": [
-            {
-                "text": "2000",
-                "isCorrect": false
-            },
-            {
-                "text": "2051",
-                "isCorrect": false
-            },
-            {
-                "text": "2025",
-                "isCorrect": true
-            },
-            {
-                "text": "1978",
-                "isCorrect": false
-            }
-        ]
-    },
-    {
-        "question": "How do you calculate the area of a circle?",
-        "answers": [
-            {
-                "text": "π * d",
-                "isCorrect": false
-            },
-            {
-                "text": "π * r^2",
-                "isCorrect": true
-            },
-            {
-                "text": "π * r",
-                "isCorrect": false
-            },
-            {
-                "text": "π * d^2",
-                "isCorrect": false
-            }
-        ]
     }
 ]

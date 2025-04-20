@@ -1,73 +1,71 @@
-// import React from 'react';
-import Quiz from '../../client/src/components/Quiz.jsx';
+import React from 'react';
+// @ts-ignore
+import Quiz from '../../client/src/components/Quiz';
+// import * as questionApi from '../../client/src/services/questionApi';
 
-// const questions = [
-// 	// const questions = [
-// 	{
-// 		_id: '1',
-// 		question: 'What is the capital of France?',
-// 		answers: [
-// 			{ text: 'Paris', isCorrect: true },
-// 			{ text: 'London', isCorrect: false },
-// 			{ text: 'Berlin', isCorrect: false },
-// 			{ text: 'Rome', isCorrect: false },
-// 		],
-// 	},
-// 	{
-// 		_id: '2',
-// 		question: 'Which planet is known as the Red Planet?',
-// 		answers: [
-// 			{ text: 'Earth', isCorrect: false },
-// 			{ text: 'Mars', isCorrect: true },
-// 			{ text: 'Jupiter', isCorrect: false },
-// 			{ text: 'Saturn', isCorrect: false },
-// 		],
-// 	},
-// 	{
-// 		_id: '3',
-// 		question: 'Who wrote "Romeo and Juliet"?',
-// 		answers: [
-// 			{ text: 'William Shakespeare', isCorrect: true },
-// 			{ text: 'Mark Twain', isCorrect: false },
-// 			{ text: 'Jane Austen', isCorrect: false },
-// 			{ text: 'Charles Dickens', isCorrect: false },
-// 		],
-// 	},
-// 	{
-// 		_id: '4',
-// 		question: 'Which gas do humans need to breathe?',
-// 		answers: [
-// 			{ text: 'Carbon Dioxide', isCorrect: false },
-// 			{ text: 'Oxygen', isCorrect: true },
-// 			{ text: 'Hydrogen', isCorrect: false },
-// 			{ text: 'Nitrogen', isCorrect: false },
-// 		],
-// 	},
-// 	{
-// 		_id: '5',
-// 		question: 'What is the color of the sky?',
-// 		answers: [
-// 			{ text: 'Blue', isCorrect: true },
-// 			{ text: 'Green', isCorrect: false },
-// 			{ text: 'Red', isCorrect: false },
-// 			{ text: 'Orange', isCorrect: false },
-// 		],
-// 	},
-// ];
+// import { mount } from 'cypress/react18';
+// import { mockState } from '../support/utils/helpers';
 
-describe('<Quiz />', () => {
+import mockQuestions from '../fixtures/questions.json';
+import '@testing-library/cypress/add-commands';
+
+describe('<Quiz /> Component', () => {
+	beforeEach(() => {
+		cy.intercept('GET', '/api/questions/random', { statusCode: 200, body: mockQuestions }).as('getQuestions')	});
+
 	it('Should render the Quiz component.', () => {
 		cy.mount(<Quiz />);
 	});
 
-	it('Should render the Quiz component before the quiz is started, and display a button.', () => {
+	it('Should display the "Start Quiz" button before the quiz is started.', () => {
 		cy.mount(<Quiz />);
 		cy.get('button').should('have.text', 'Start Quiz');
 	});
 
-	it('Should render the Quiz component after the quiz has started, and display the current question.', () => {
+	it('Should start the quiz and display a question with 4 answer choices when the "Start" button is clicked.', () => {
 		cy.mount(<Quiz />);
-		cy.get('button').click(); // TODO: Start the quiz ??
+
+		//Press the button to start quiz
+		cy.get('button').contains('Start Quiz').click();
+
+		//Check if first question is displayed
 		cy.get('h2').should('exist');
+		cy.get('h2').should('contain', mockQuestions[0].question);
+
+		//Check if all 4 answer choices
+		cy.get('.btn-primary').should('have.length', 4);
+		// cy.get('button').contains('1')
+		// cy.get('button').contains('2')
+		// cy.get('button').contains('3')
+		// cy.get('button').contains('4')
 	});
+
+	it('Should let user answer questions and complete the quiz.', () => {
+		cy.mount(<Quiz />);
+		cy.get('button').contains('Start Quiz').click();
+
+		mockQuestions.forEach((question) => {
+			const correctAnswerIndex = question.answers.findIndex(
+				(answer) => answer.isCorrect
+			);
+			cy.get('.btn-primary').eq(correctAnswerIndex).click();
+		});
+
+		cy.get('h2').contains('Quiz Completed');
+		cy.get('.alert-success').contains(`Your score: ${mockQuestions.length}/${mockQuestions.length}`)
+	});
+
+	it('Should let the user restart the quiz.', () => {
+		cy.mount(<Quiz />)
+		cy.get('button').contains('Start Quiz').click(); 
+
+		mockQuestions.forEach(() => {
+			cy.get('.btn-primary').contains('1').click();
+		});
+
+		cy.get('button').contains('Take New Quiz').click();
+		cy.get('h2').should('contain', mockQuestions[0].question);
+		cy.get('.btn-primary').should('have.length', 4);
+
+	})
 });

@@ -1,7 +1,4 @@
 import mockQuestions from '../fixtures/questions.json';
-// import { Responses } from '../support/types'
-
-
 
 describe('Tech Quiz End-to-End Test Suite', () => {
     context('Quiz Setup', () => {
@@ -70,7 +67,6 @@ describe('Tech Quiz End-to-End Test Suite', () => {
         beforeEach(() => {
             cy.visit('http://localhost:3001');
             cy.intercept('GET', 'api/questions/random', {
-                // body: mockQuestions,
                 // statusCode: 200,
                 // body: 'mockQuestions'
                 fixture: 'questions.json'

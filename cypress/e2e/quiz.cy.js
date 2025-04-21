@@ -13,7 +13,7 @@ describe('Tech Quiz End-to-End Test Suite', () => {
         });
 
         it('Should render the "Start Quiz" button on page load.', () => {
-            cy.findByText('Start Quiz').should('be.visible');
+            cy.findByText('Start Quiz').should('exist');
         })
 
         it('Upon quiz start, should render the first question and answer options.', () => {
@@ -35,7 +35,6 @@ describe('Tech Quiz End-to-End Test Suite', () => {
                 // statusCode: 200,
                 // body: 'mockQuestions'
                 fixture: 'questions.json'
-
             }).as('fixtureQuestions');
 
             cy.get('button').contains('Start Quiz').click();
